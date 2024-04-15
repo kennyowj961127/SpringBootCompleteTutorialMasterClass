@@ -7,8 +7,7 @@
        http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="doctor" class="org.example.Doctor">
-        <property name="qualification" value="MBBS"/>
-        <property name="nurse" ref="nurse"/>
+        <constructor-arg value="MBBS" />
     </bean>
     <bean id="nurse" class="org.example.Nurse">
 
