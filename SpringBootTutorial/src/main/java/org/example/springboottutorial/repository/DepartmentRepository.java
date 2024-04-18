@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
+    // Spring Data JPA Query Methods
+    // https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html
+    Department findByDepartmentNameIgnoreCase(String departmentName);
 }
