@@ -1,5 +1,6 @@
 package org.example.springboottutorial.controller;
 
+import jakarta.validation.Valid;
 import org.example.springboottutorial.entity.Department;
 import org.example.springboottutorial.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,9 @@ public class DepartmentController {
     private DepartmentService departmentService;
 
     @PostMapping("/departments")
-    public Department saveDepartment(@RequestBody Department department) {
+    public Department saveDepartment(
+//            @Valid
+            @RequestBody Department department) {
         return departmentService.saveDepartment(department);
     }
 
