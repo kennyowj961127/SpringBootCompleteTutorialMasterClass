@@ -2,6 +2,7 @@ package org.example.springdatajpatutorial.repository;
 
 import org.example.springdatajpatutorial.entity.Course;
 import org.example.springdatajpatutorial.entity.CourseMaterial;
+import org.example.springdatajpatutorial.entity.Student;
 import org.example.springdatajpatutorial.entity.Teacher;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,5 +69,28 @@ class CourseRepositoryTest {
         Pageable firstPageTenRecords = PageRequest.of(0, 10, Sort.by("title"));
         List<Course> courses = courseRepository.findByTitleContaining("a", firstPageTenRecords).getContent();
         System.out.println("Courses = "+courses);
+    }
+
+    @Test
+    public void saveCourseWithStudentAndTeacher(){
+        Teacher teacher = Teacher.builder()
+                .firstName("Bob")
+                .lastName("Doe")
+                .build();
+        Student student = Student.builder()
+                .firstName("Joe")
+                .lastName("Hoe")
+                .emailId("joe@gmail.com")
+                .build();
+
+        Course course = Course.builder()
+                .title("ML")
+                .credit(12)
+                .teacher(teacher)
+                .build();
+
+        course.addStudent(student);
+
+        courseRepository.save(course);
     }
 }
