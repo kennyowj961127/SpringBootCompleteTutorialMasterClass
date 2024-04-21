@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: SpringBootTutorial
+h2:
+  console:
+    enabled: true
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+
+# MySQL Database
+# spring:
+#   jpa:
+#     hibernate:
+#       ddl-auto: create-drop
+#   datasource:
+#     url: jdbc:mysql://localhost:3306/dcbapp
+#     username: root
+#     password: admin
+#     show-sql: true
+#     driver-class-name: com.mysql.cj.jdbc.Driver
+#     database-platform: org.hibernate.dialect.MySQLDialect
+
+welcome:
+  message: Welcome to Spring Boot Tutorial
+
+server:
+  port: 8082
