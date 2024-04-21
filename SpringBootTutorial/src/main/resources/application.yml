@@ -1,32 +1,73 @@
-spring:
-  application:
-    name: SpringBootTutorial
-h2:
-  console:
-    enabled: true
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driverClassName: org.h2.Driver
-    username: sa
-    password: password
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-
-# MySQL Database
-# spring:
-#   jpa:
-#     hibernate:
-#       ddl-auto: create-drop
-#   datasource:
-#     url: jdbc:mysql://localhost:3306/dcbapp
-#     username: root
-#     password: admin
-#     show-sql: true
-#     driver-class-name: com.mysql.cj.jdbc.Driver
-#     database-platform: org.hibernate.dialect.MySQLDialect
-
-welcome:
-  message: Welcome to Spring Boot Tutorial
-
 server:
   port: 8082
+spring:
+  profiles:
+    active: qa
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  application:
+    name: SpringBootTutorial
+  # MySQL Database
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    url: jdbc:mysql://localhost:3306/dcbapp_dev
+    username: root
+    password: admin
+    show-sql: true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    database-platform: org.hibernate.dialect.MySQLDialect
+#h2:
+#  console:
+#    enabled: true
+#  datasource:
+#    url: jdbc:h2:mem:testdb
+#    driverClassName: org.h2.Driver
+#    username: sa
+#    password: password
+#  jpa:
+#    database-platform: org.hibernate.dialect.H2Dialect
+
+
+welcome:
+  message: Welcome to Spring Boot Tutorial DEV
+
+---
+spring:
+  config:
+    activate:
+      on-profile: qa
+  application:
+    name: SpringBootTutorial
+  # MySQL Database
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    url: jdbc:mysql://localhost:3306/dcbapp_qa
+    username: root
+    password: admin
+    show-sql: true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    database-platform: org.hibernate.dialect.MySQLDialect
+#h2:
+#  console:
+#    enabled: true
+#  datasource:
+#    url: jdbc:h2:mem:testdb
+#    driverClassName: org.h2.Driver
+#    username: sa
+#    password: password
+#  jpa:
+#    database-platform: org.hibernate.dialect.H2Dialect
+
+
+
+
+welcome:
+  message: Welcome to Spring Boot Tutorial QA
