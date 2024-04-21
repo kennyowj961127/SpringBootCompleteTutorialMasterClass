@@ -27,6 +27,7 @@ management:
     web:
       exposure:
         include: "*"
+        exclude: "env,beans"
 #h2:
 #  console:
 #    enabled: true
@@ -65,6 +66,7 @@ management:
     web:
       exposure:
         include: "*"
+        exclude: "env,beans"
 #h2:
 #  console:
 #    enabled: true
