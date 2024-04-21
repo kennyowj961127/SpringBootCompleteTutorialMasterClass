@@ -22,6 +22,11 @@ spring:
     show-sql: true
     driver-class-name: com.mysql.cj.jdbc.Driver
     database-platform: org.hibernate.dialect.MySQLDialect
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 #h2:
 #  console:
 #    enabled: true
@@ -55,6 +60,11 @@ spring:
     show-sql: true
     driver-class-name: com.mysql.cj.jdbc.Driver
     database-platform: org.hibernate.dialect.MySQLDialect
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 #h2:
 #  console:
 #    enabled: true
