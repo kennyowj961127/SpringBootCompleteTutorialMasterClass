@@ -1,10 +1,12 @@
 package org.example.client.event;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.example.client.entity.User;
 import org.springframework.context.ApplicationEvent;
 
-import java.time.Clock;
-
+@Getter
+@Setter
 public class RegistrationCompleteEvent extends ApplicationEvent {
 
     private User user;
@@ -12,5 +14,7 @@ public class RegistrationCompleteEvent extends ApplicationEvent {
 
     public RegistrationCompleteEvent(User user, String applicationUrl) {
         super(user);
+        this.user = user;
+        this.applicationUrl = applicationUrl;
     }
 }

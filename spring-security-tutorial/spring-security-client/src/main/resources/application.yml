@@ -7,7 +7,7 @@ spring:
   jpa:
     hibernate:
      ddl-auto: create-drop
-    show-sql:
+    show-sql: true
   datasource:
    url: jdbc:mysql://localhost:3306/user-registration
    username: root
