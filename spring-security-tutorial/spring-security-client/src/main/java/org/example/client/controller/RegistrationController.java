@@ -6,11 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.client.entity.User;
 import org.example.client.entity.VerificationToken;
 import org.example.client.event.RegistrationCompleteEvent;
+import org.example.client.model.PasswordModel;
 import org.example.client.model.UserModel;
 import org.example.client.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
@@ -39,11 +42,6 @@ public class RegistrationController {
         return "Token resent successfully";
     }
 
-    private void resendVerificationTokenEmail(User user, String s, VerificationToken verificationToken) {
-        log.info("Resending verification token email to user: {}", s+ "/verifyRegistration?token="+verificationToken.getToken());
-
-    }
-
     @GetMapping("/verifyRegistration")
     public String verifyRegistration(@RequestParam("token") String token){
         log.info("Token received: {}", token);
@@ -57,9 +55,30 @@ public class RegistrationController {
         }
     }
 
+    @PostMapping("/resetPassword")
+    public String resetPassword(@RequestBody PasswordModel passwordModel, final HttpServletRequest request){
+        User user = userService.findUserByEmail(passwordModel.getEmail());
+        String url = "";
+        if(user != null) {
+            String token = UUID.randomUUID().toString();
+            userService.createPasswordResetTokenForUser(user, token);
+            url = passwordResetTokenEmail(user, applicationUrl(request), token);
+        }
+        return url;
+    }
+
+    private String passwordResetTokenEmail(User user, String s, String token) {
+        log.info("Sending password reset token email to user: {}", s + "/savePassword?token="+token);
+        return s + "/resetPassword?token="+token;
+    }
+
     private String applicationUrl(HttpServletRequest request) {
-//        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
         log.info("Original UR: {}", request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
         return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+    }
+
+    private void resendVerificationTokenEmail(User user, String s, VerificationToken verificationToken) {
+        log.info("Resending verification token email to user: {}", s+ "/verifyRegistration?token="+verificationToken.getToken());
+
     }
 }

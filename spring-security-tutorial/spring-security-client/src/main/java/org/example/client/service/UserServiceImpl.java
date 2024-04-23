@@ -2,9 +2,11 @@ package org.example.client.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.client.entity.PasswordResetToken;
 import org.example.client.entity.User;
 import org.example.client.entity.VerificationToken;
 import org.example.client.model.UserModel;
+import org.example.client.repository.PasswordResetTokenRepository;
 import org.example.client.repository.UserRepository;
 import org.example.client.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class UserServiceImpl implements UserService{
     private UserRepository userRepository;
 
     private VerificationTokenRepository verificationTokenRepository;
+
+    private PasswordResetTokenRepository passwordResetTokenRepository;
 
     private PasswordEncoder passwordEncoder;
 
@@ -73,5 +77,19 @@ public class UserServiceImpl implements UserService{
         log.info("New token: {}", verificationToken);
         verificationTokenRepository.save(verificationToken);
         return verificationToken;
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public void createPasswordResetTokenForUser(User user, String token) {
+        // Save the token in the database
+        PasswordResetToken passwordResetToken = new PasswordResetToken(user, token);
+        passwordResetTokenRepository.save(passwordResetToken);
+
     }
 }
