@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -25,16 +26,16 @@ public class RegistrationController {
     private ApplicationEventPublisher applicationEventPublisher;
 
     @PostMapping("/register")
-    public String registerUser(@RequestBody UserModel userModel, final HttpServletRequest request){
+    public String registerUser(@RequestBody UserModel userModel, final HttpServletRequest request) {
         User user = userService.registerUser(userModel);
         applicationEventPublisher.publishEvent(new RegistrationCompleteEvent(user, applicationUrl(request)));
         return "User registered successfully";
     }
 
     @GetMapping("/resendRegistrationToken")
-    public String resendRegistrationToken(@RequestParam("token") String oldToken, final HttpServletRequest request){
+    public String resendRegistrationToken(@RequestParam("token") String oldToken, final HttpServletRequest request) {
         VerificationToken verificationToken = userService.generateNewVerificationToken(oldToken);
-        if(verificationToken == null){
+        if (verificationToken == null) {
             return "Invalid token";
         }
         User user = verificationToken.getUser();
@@ -43,23 +44,23 @@ public class RegistrationController {
     }
 
     @GetMapping("/verifyRegistration")
-    public String verifyRegistration(@RequestParam("token") String token){
+    public String verifyRegistration(@RequestParam("token") String token) {
         log.info("Token received: {}", token);
         String result = userService.validateVerificationToken(token);
-        if(result.equals("valid")){
+        if (result.equals("valid")) {
             return "User verified successfully";
-    }else if(result.equals("expired")){
+        } else if (result.equals("expired")) {
             return "Token expired";
-        }else{
+        } else {
             return "Invalid token";
         }
     }
 
     @PostMapping("/resetPassword")
-    public String resetPassword(@RequestBody PasswordModel passwordModel, final HttpServletRequest request){
+    public String resetPassword(@RequestBody PasswordModel passwordModel, final HttpServletRequest request) {
         User user = userService.findUserByEmail(passwordModel.getEmail());
         String url = "";
-        if(user != null) {
+        if (user != null) {
             String token = UUID.randomUUID().toString();
             userService.createPasswordResetTokenForUser(user, token);
             url = passwordResetTokenEmail(user, applicationUrl(request), token);
@@ -67,9 +68,29 @@ public class RegistrationController {
         return url;
     }
 
+    @PostMapping("/savePassword")
+    public String savePassword(@RequestBody PasswordModel passwordModel, @RequestParam("token") String token) {
+        String result = userService.validatePasswordResetToken(token);
+        if (result.equalsIgnoreCase("valid")) {
+            Optional<User> user = userService.findUserByPasswordResetToken(token);
+            if (user.isPresent()) {
+                User resetUser = user.get();
+                resetUser.setPassword(passwordModel.getPassword());
+                userService.registerUser(resetUser);
+                return "Password reset successfully";
+            } else {
+                return "Invalid token";
+            }
+        } else if (result.equals("expired")) {
+            return "Token expired";
+        } else {
+            return "Invalid token";
+        }
+    }
+
     private String passwordResetTokenEmail(User user, String s, String token) {
-        log.info("Sending password reset token email to user: {}", s + "/savePassword?token="+token);
-        return s + "/resetPassword?token="+token;
+        log.info("Sending password reset token email to user: {}", s + "/savePassword?token=" + token);
+        return s + "/resetPassword?token=" + token;
     }
 
     private String applicationUrl(HttpServletRequest request) {
@@ -78,7 +99,7 @@ public class RegistrationController {
     }
 
     private void resendVerificationTokenEmail(User user, String s, VerificationToken verificationToken) {
-        log.info("Resending verification token email to user: {}", s+ "/verifyRegistration?token="+verificationToken.getToken());
+        log.info("Resending verification token email to user: {}", s + "/verifyRegistration?token=" + verificationToken.getToken());
 
     }
 }
