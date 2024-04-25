@@ -36,6 +36,9 @@ public class WebSecurityConfig {
                         .requestMatchers(antMatcher(HttpMethod.POST, "/register")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/verifyRegistration**")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/resendRegistrationToken**")).permitAll()
+                        .requestMatchers(antMatcher(HttpMethod.POST, "/resetPassword")).permitAll()
+                        .requestMatchers(antMatcher(HttpMethod.POST, "/savePassword**")).permitAll()
+                        .requestMatchers(antMatcher(HttpMethod.POST, "/changePassword")).permitAll()
                         .anyRequest().authenticated()
                 ).formLogin(Customizer.withDefaults());
         return http.build();

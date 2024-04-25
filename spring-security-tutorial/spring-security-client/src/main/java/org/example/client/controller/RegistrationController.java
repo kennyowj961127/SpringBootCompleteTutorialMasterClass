@@ -74,9 +74,7 @@ public class RegistrationController {
         if (result.equalsIgnoreCase("valid")) {
             Optional<User> user = userService.findUserByPasswordResetToken(token);
             if (user.isPresent()) {
-                User resetUser = user.get();
-                resetUser.setPassword(passwordModel.getPassword());
-                userService.registerUser(resetUser);
+                userService.changePassword(user.get(), passwordModel.getNewPassword());
                 return "Password reset successfully";
             } else {
                 return "Invalid token";
@@ -88,9 +86,19 @@ public class RegistrationController {
         }
     }
 
+    @PostMapping("/changePassword")
+    public String changePassword(@RequestBody PasswordModel passwordModel){
+        User user = userService.findUserByEmail(passwordModel.getEmail());
+        if (!userService.checkIfValidOldPassword(user, passwordModel.getOldPassword())){
+            return "Invalid old password";
+        }
+        userService.changePassword(user, passwordModel.getNewPassword());
+        return "Password changed successfully";
+    }
+
     private String passwordResetTokenEmail(User user, String s, String token) {
         log.info("Sending password reset token email to user: {}", s + "/savePassword?token=" + token);
-        return s + "/resetPassword?token=" + token;
+        return s + "/savePassword?token=" + token;
     }
 
     private String applicationUrl(HttpServletRequest request) {
